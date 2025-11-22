@@ -8,16 +8,19 @@ namespace ClassLibrary
 
         public int Node;
 
+        public string EnergyDistrict;
+
         public string EnergySystem;
 
         public string UnifiedEnergySystem;
 
-        public PowerSystem() : this("", 1, "", "") { }
+        public PowerSystem() : this("", 1, "", "", "") { }
 
-        public PowerSystem(string measurementType, int node, string energySystem, string unifiedEnergySystem)
+        public PowerSystem(string measurementType, int node, string energyDistrict, string energySystem, string unifiedEnergySystem)
         {
             MeasurementType = measurementType;
             Node = node;
+            EnergyDistrict = energyDistrict;
             EnergySystem = energySystem;
             UnifiedEnergySystem = unifiedEnergySystem;
         }

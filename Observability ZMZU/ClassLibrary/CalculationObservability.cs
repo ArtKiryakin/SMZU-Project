@@ -1,4 +1,7 @@
 ﻿using ASTRALib;
+using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ClassLibrary
@@ -17,25 +20,40 @@ namespace ClassLibrary
             // Доступ к данным
             foreach (var row in csvData)
             {
-                data.Add(new PowerSystem(row[0], Convert.ToInt32(row[1]), row[3], row[5]));
+                data.Add(new PowerSystem(row[0], Convert.ToInt32(row[1]), row[2], row[3], row[5]));
             }
 
             return data;
         }
 
-        public static Dictionary<string, int> CalculationQuantityNodes(List<PowerSystem> list, bool unifiedEnergySystem = false)
+        public static Dictionary<string, int> CalculationQuantityNodes(List<PowerSystem> list, int typeSystem = 1)
         {
             Dictionary<string, int> nodesDictionary = new Dictionary<string, int> { };
             foreach (PowerSystem powerSystem in list)
             {
                 string energuSystem;
-                if (unifiedEnergySystem)
+                switch (typeSystem)
                 {
-                    energuSystem = powerSystem.UnifiedEnergySystem;
-                }
-                else
-                {
-                    energuSystem = powerSystem.EnergySystem;
+                    case 1:
+                    {
+                        energuSystem = powerSystem.EnergyDistrict;
+                        break;
+                    }
+                    case 2:
+                    {
+                        energuSystem = powerSystem.EnergySystem;
+                        break;
+                    }
+                    case 3:
+                    {
+                        energuSystem = powerSystem.UnifiedEnergySystem;
+                        break;
+                    }
+                    default:
+                    {
+                        energuSystem = powerSystem.EnergyDistrict;
+                        break;
+                    }
                 }
                 if (nodesDictionary.ContainsKey(energuSystem))
                 {
@@ -49,38 +67,89 @@ namespace ClassLibrary
             return nodesDictionary;
         }
 
-        public static Dictionary<string, int> CalculationQuantityBranches(List<PowerSystem> list, string fileRastrPath, bool unifiedEnergySystem = false)
+        public static Dictionary<string, int> CalculationQuantityBranches(List<PowerSystem> list, string fileRastrPath, int typeSystem = 1)
         {
             Dictionary<string, int> branchesDictionary = new Dictionary<string, int> { };
             IRastr rastr = new Rastr();
             rastr.Load(RG_KOD.RG_REPL, fileRastrPath, "");
             ITable tabelBranch = (ITable)rastr.Tables.Item("vetv");
-            ICol branch = (ICol)tabelBranch.Cols.Item("ip");
+            ICol start_number = (ICol)tabelBranch.Cols.Item("ip");
+            ICol end_number = (ICol)tabelBranch.Cols.Item("iq");
+            List<List<int>> listBranchesNumbers = new List<List<int>> { };
             int schet = tabelBranch.Size;
+            Dictionary<string, List<int>> dictionaryEnergySystems = new Dictionary<string, List<int>> { };
+
             for (int index = 0; index < schet; index++)
             {
-                foreach (PowerSystem powerSystem in list)
+                List<int> numbers = new List<int> { Convert.ToInt32(start_number.get_ZN(index)), Convert.ToInt32(end_number.get_ZN(index)) };
+                listBranchesNumbers.Add(numbers);
+            }
+            foreach (PowerSystem powerSystem in list)
+            {
+                string energuSystem;
+                switch (typeSystem)
                 {
-                    string energuSystem;
-                    if (unifiedEnergySystem)
-                    {
-                        energuSystem = powerSystem.UnifiedEnergySystem;
-                    }
-                    else
-                    {
-                        energuSystem = powerSystem.EnergySystem;
-                    }
-                    if (branchesDictionary.ContainsKey(energuSystem) && powerSystem.Node == Convert.ToInt32(branch.get_ZN(index)))
-                    {
-                        branchesDictionary[energuSystem] += 1;
-                    }
-                    else
-                    {
-                        if (powerSystem.Node == Convert.ToInt32(branch.get_ZN(index)))
+                    case 1:
                         {
-                            branchesDictionary[energuSystem] = 1;
+                            energuSystem = powerSystem.EnergyDistrict;
+                            break;
+                        }
+                    case 2:
+                        {
+                            energuSystem = powerSystem.EnergySystem;
+                            break;
+                        }
+                    case 3:
+                        {
+                            energuSystem = powerSystem.UnifiedEnergySystem;
+                            break;
+                        }
+                    default:
+                        {
+                            energuSystem = powerSystem.EnergyDistrict;
+                            break;
+                        }
+                }
+                if (dictionaryEnergySystems.ContainsKey(energuSystem))
+                {
+                    dictionaryEnergySystems[energuSystem].Add(powerSystem.Node);
+                }
+                else
+                {
+                    dictionaryEnergySystems[energuSystem] = new List<int> { powerSystem.Node };
+                }
+            }
+            foreach (List<int> branch in listBranchesNumbers)
+            {
+                foreach (KeyValuePair<string, List<int>> entry in dictionaryEnergySystems)
+                {
+                    if (entry.Value.Contains(branch[0]) && entry.Value.Contains(branch[1]))
+                    {
+                        Calculation(branchesDictionary, entry.Key);
+                        break;
+                    }
+                    else
+                    {
+                        if (entry.Value.Contains(branch[0]))
+                        {
+                            Calculation(branchesDictionary, entry.Key);
+                        }
+                        if (entry.Value.Contains(branch[1]))
+                        {
+                            Calculation(branchesDictionary, entry.Key);
                         }
                     }
+                }
+            }
+            void Calculation(Dictionary<string, int> branchesDictionary, string name)
+            {
+                if (branchesDictionary.ContainsKey(name))
+                {
+                    branchesDictionary[name] += 1;
+                }
+                else
+                {
+                    branchesDictionary[name] = 1;
                 }
             }
             return branchesDictionary;
