@@ -8,13 +8,13 @@ namespace ClassLibrary
 {
     public class CalculationObservability
     {
-        public static List<PowerSystem> ReadNodeFile(string fileRath)
+        public static List<PowerSystem> ReadNodeFile(string filePath)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             List<PowerSystem> data = new List<PowerSystem> { };
 
             // Чтение в список массивов
-            var csvData = File.ReadAllLines(fileRath, Encoding.GetEncoding(1251))
+            var csvData = File.ReadAllLines(filePath, Encoding.GetEncoding(1251))
                              .Select(line => line.Split(';'))
                              .ToList();
             // Доступ к данным

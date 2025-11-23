@@ -27,7 +27,7 @@ namespace ClassLibrary
 
         public string GetInfo()
         {
-            return $"{MeasurementType}, {Node}, {EnergySystem}, {UnifiedEnergySystem}";
+            return $"MeasurementType: {MeasurementType}, Node: {Node}, EnergyDistrict: {EnergyDistrict}, EnergySystem: {EnergySystem}, UnifiedEnergySystem: {UnifiedEnergySystem}";
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Observability ZMZU", "Observability ZMZU\Observability ZMZU.csproj", "{4DDB8773-C7C4-48EE-B27F-5E1488A92FDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{F6F16B7D-52AE-4012-A265-2233F6B398A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractionWithTheDatabase", "InteractionWithTheDatabase\InteractionWithTheDatabase.csproj", "{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,14 @@ Global
 		{F6F16B7D-52AE-4012-A265-2233F6B398A7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F6F16B7D-52AE-4012-A265-2233F6B398A7}.Release|x86.ActiveCfg = Release|x86
 		{F6F16B7D-52AE-4012-A265-2233F6B398A7}.Release|x86.Build.0 = Release|x86
+		{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}.Debug|x86.Build.0 = Debug|Any CPU
+		{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}.Release|x86.ActiveCfg = Release|Any CPU
+		{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
