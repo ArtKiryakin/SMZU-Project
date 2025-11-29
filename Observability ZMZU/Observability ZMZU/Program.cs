@@ -1,20 +1,21 @@
 ﻿using ClassLibrary;
 using InteractionWithTheDatabase;
+using InteractionWithTheDatabaseAndFileStorage;
 namespace Observability_ZMZU
 {
     public class Program
     {
         static void Main(string[] args)
         {
-            //var list = CalculationObservability.ReadNodeFile("D:\\Учеба\\Мой сем.4\\Нирс\\Территории\\all_csv.csv");
-            //var list2 = CalculationObservability.CalculationQuantityBranches(list, "D:\\Учеба\\Срезы\\2023_01_11\\00_04_35\\roc_debug_before_OC", 3);
-            // Использование
-            // Использование
-            DatabaseConection.FillingInNodeAffiliation();
-            //var list2 = CalculationObservability.CalculationQuantityNodes(list, 3);
-            //foreach (KeyValuePair<string, int> entry in list2)
+            Dictionary<string, double> dict = CalculationObservability.CalculateObservability("D:\\Учеба\\Срезы", new DateTime(2023, 1, 11, 1, 0, 23), new DateTime(2023, 1, 11, 2, 23, 30), 1);
+            foreach (KeyValuePair<string, double> pair in dict)
+            {
+                Console.WriteLine($"{pair.Key}: {pair.Value}");
+            }
+            //List<string> a = FileStorageConnection.GetRastrFiles("D:\\Учеба\\Срезы", new DateTime(2023, 1, 11, 1, 0, 23), new DateTime(2023, 1, 11, 14, 2, 3));
+            //foreach(string i in a)
             //{
-            //    Console.WriteLine($"Энергосистема: {entry.Key}, Кол-во : {entry.Value}");
+            //    Console.WriteLine(i);
             //}
             Console.ReadLine();
         }

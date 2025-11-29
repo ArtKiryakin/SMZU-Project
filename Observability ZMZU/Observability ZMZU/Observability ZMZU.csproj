@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
-    <ProjectReference Include="..\InteractionWithTheDatabase\InteractionWithTheDatabase.csproj" />
+    <ProjectReference Include="..\InteractionWithTheDatabase\InteractionWithTheDatabaseAndFileStorage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

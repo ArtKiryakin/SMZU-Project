@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\InteractionWithTheDatabase\InteractionWithTheDatabaseAndFileStorage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="ASTRALib">
       <HintPath>C:\Program Files (x86)\RastrWin3\ASTRALib.dll</HintPath>
     </Reference>

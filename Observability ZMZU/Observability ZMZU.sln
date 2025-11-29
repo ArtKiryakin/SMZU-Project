@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Observability ZMZU", "Obser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{F6F16B7D-52AE-4012-A265-2233F6B398A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractionWithTheDatabase", "InteractionWithTheDatabase\InteractionWithTheDatabase.csproj", "{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InteractionWithTheDatabaseAndFileStorage", "InteractionWithTheDatabase\InteractionWithTheDatabaseAndFileStorage.csproj", "{8625234A-D49D-4C64-A0A1-1DD78CC1F2EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

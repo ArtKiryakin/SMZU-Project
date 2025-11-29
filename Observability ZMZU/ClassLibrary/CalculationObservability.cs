@@ -3,31 +3,17 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-
+using InteractionWithTheDatabase;
+using System.Reflection;
+using InteractionWithTheDatabaseAndFileStorage;
+using System.Collections.Generic;
 namespace ClassLibrary
 {
     public class CalculationObservability
     {
-        public static List<PowerSystem> ReadNodeFile(string filePath)
+        public static Dictionary<string, int> CalculationQuantityNodes(int typeSystem = 1)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            List<PowerSystem> data = new List<PowerSystem> { };
-
-            // Чтение в список массивов
-            var csvData = File.ReadAllLines(filePath, Encoding.GetEncoding(1251))
-                             .Select(line => line.Split(';'))
-                             .ToList();
-            // Доступ к данным
-            foreach (var row in csvData)
-            {
-                data.Add(new PowerSystem(row[0], Convert.ToInt32(row[1]), row[2], row[3], row[5]));
-            }
-
-            return data;
-        }
-
-        public static Dictionary<string, int> CalculationQuantityNodes(List<PowerSystem> list, int typeSystem = 1)
-        {
+            List<PowerSystem> list = DatabaseConection.ReadDataOfPowerSystems();
             Dictionary<string, int> nodesDictionary = new Dictionary<string, int> { };
             foreach (PowerSystem powerSystem in list)
             {
@@ -67,8 +53,9 @@ namespace ClassLibrary
             return nodesDictionary;
         }
 
-        public static Dictionary<string, int> CalculationQuantityBranches(List<PowerSystem> list, string fileRastrPath, int typeSystem = 1)
+        public static Dictionary<string, int> CalculationQuantityBranches(string fileRastrPath, int typeSystem = 1)
         {
+            List<PowerSystem> list = DatabaseConection.ReadDataOfPowerSystems();
             Dictionary<string, int> branchesDictionary = new Dictionary<string, int> { };
             IRastr rastr = new Rastr();
             rastr.Load(RG_KOD.RG_REPL, fileRastrPath, "");
@@ -153,6 +140,85 @@ namespace ClassLibrary
                 }
             }
             return branchesDictionary;
+        }
+        public static Dictionary<string, int> CalculationQuantityTI(string fileRastrPath, int typeSystem = 1)
+        {
+            List<PowerSystem> list = DatabaseConection.ReadDataOfPowerSystems();
+            Dictionary<string, int> tiDictionary = new Dictionary<string, int> { };
+            IRastr rastr = new Rastr();
+            rastr.Load(RG_KOD.RG_REPL, fileRastrPath, "");
+            ITable tabelTI = (ITable)rastr.Tables.Item("ti");
+            ICol nodeNumber = (ICol)tabelTI.Cols.Item("id1");
+            int schet = tabelTI.Size;
+            List<int> listTI = new List<int> { };
+            for (int i = 0; i < schet; i++)
+            {
+                listTI.Add(Convert.ToInt32(nodeNumber.get_ZN(i)));
+            }
+            foreach (PowerSystem powerSystem in list)
+            {
+                string energuSystem;
+                switch (typeSystem)
+                {
+                    case 1:
+                        {
+                            energuSystem = powerSystem.EnergyDistrict;
+                            break;
+                        }
+                    case 2:
+                        {
+                            energuSystem = powerSystem.EnergySystem;
+                            break;
+                        }
+                    case 3:
+                        {
+                            energuSystem = powerSystem.UnifiedEnergySystem;
+                            break;
+                        }
+                    default:
+                        {
+                            energuSystem = powerSystem.EnergyDistrict;
+                            break;
+                        }
+                }
+                if (tiDictionary.ContainsKey(energuSystem))
+                {
+                    tiDictionary[energuSystem] += listTI.Count(ti => ti == powerSystem.Node);
+                }
+                else
+                {
+                    tiDictionary[energuSystem] = listTI.Count(ti => ti == powerSystem.Node);
+                }
+            }
+            return tiDictionary;
+        }
+
+        public static Dictionary<string, double> CalculateObservability(string filePathSlices, DateTime startDateTime, DateTime endDateTime, int typeSystem = 1)
+        {
+            Dictionary<string, double> dictObservability = new Dictionary<string, double> { };
+            Dictionary<string, int> dictNodes = CalculationQuantityNodes(typeSystem);
+            List<string> fileRastr = FileStorageConnection.GetRastrFiles(filePathSlices, startDateTime, endDateTime);
+            foreach(string filePath in fileRastr)
+            {
+                Dictionary<string, int> dictBranches = CalculationQuantityBranches(filePath, typeSystem);
+                Dictionary<string, int> dictTI = CalculationQuantityTI(filePath, typeSystem);
+                foreach (KeyValuePair<string, int> system in dictNodes)
+                {
+                    if (dictObservability.ContainsKey(system.Key))
+                    {
+                        dictObservability[system.Key] += Convert.ToDouble(dictTI[system.Key]) / Convert.ToDouble(dictBranches[system.Key] + dictNodes[system.Key]);
+                    }
+                    else
+                    {
+                        dictObservability[system.Key] = Convert.ToDouble(dictTI[system.Key]) / Convert.ToDouble(dictBranches[system.Key] + dictNodes[system.Key]);
+                    }
+                }
+            }
+            foreach (KeyValuePair<string, int> system in dictNodes)
+            {
+                dictObservability[system.Key] /= Math.Round(Convert.ToDouble(fileRastr.Count), 3);
+            }
+            return dictObservability;
         }
     }
 }
