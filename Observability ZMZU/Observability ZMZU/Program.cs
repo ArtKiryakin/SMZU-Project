@@ -1,6 +1,7 @@
 ﻿using ClassLibrary;
 using InteractionWithTheDatabase;
 using InteractionWithTheDatabaseAndFileStorage;
+using System.Collections.Generic;
 namespace Observability_ZMZU
 {
     public class Program
@@ -17,15 +18,18 @@ namespace Observability_ZMZU
             //{
             //    Console.WriteLine(i);
             //}
-            Dictionary<string, Dictionary<List<string>, int>> resultOS = OS.GoOS(new List<int> {19967, 49004}, FileStorageConnection.GetRastrFiles("D:\\Учеба\\Срезы", new DateTime(2023, 1, 11, 1, 0, 23), new DateTime(2023, 1, 11, 2, 23, 30)));
-            foreach (var system in resultOS)
+            Dictionary<string, Dictionary<string, int>> resultOS = OS.GoOS(new List<int> {19967, 49004}, FileStorageConnection.GetRastrFiles("D:\\Учеба\\Срезы", new DateTime(2023, 1, 11, 1, 0, 23), new DateTime(2023, 1, 11, 1, 8, 30)));
+            Dictionary<string, double> kn = OS.CalcularteKn(resultOS);
+            Console.WriteLine("kn:");
+            foreach (var ti in kn)
             {
-                foreach (var nodesData in system.Value)
-                {
-                    string nodesString = string.Join(", ", nodesData.Key);
-
-                    Console.WriteLine($"│ {system.Key} │ {nodesString} │ {nodesData.Value} │");
-                }
+                Console.WriteLine($"{ti.Key} -> {ti.Value}");
+            }
+            Dictionary<string, double> kc = OS.CalcularteKc(resultOS);
+            Console.WriteLine("kc:");
+            foreach (var ti in kc)
+            {
+                Console.WriteLine($"{ti.Key} -> {ti.Value}");
             }
             Console.ReadLine();
         }

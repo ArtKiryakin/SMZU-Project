@@ -216,7 +216,7 @@ namespace ClassLibrary
             }
             foreach (KeyValuePair<string, int> system in dictNodes)
             {
-                dictObservability[system.Key] /= Math.Round(Convert.ToDouble(fileRastr.Count), 3);
+                dictObservability[system.Key] /= Convert.ToDouble(fileRastr.Count);
             }
             return dictObservability;
         }
