@@ -44,7 +44,7 @@ namespace InteractionWithTheDatabaseAndFileStorage
             return listBranchs;
         }
 
-        public static List<string> GetRastrFiles(string filePathSlices, DateTime startDateTime, DateTime endDateTime)
+        public static List<string> GetRastrFiles(string filePathSlices, DateTime startDateTime, DateTime endDateTime, int thinning = 1)
         {
             string datePath = $"{startDateTime.Year}_{startDateTime:MM}_{startDateTime:dd}";
             string filePath = filePathSlices + $"\\{datePath}";
@@ -53,17 +53,22 @@ namespace InteractionWithTheDatabaseAndFileStorage
             DirectoryInfo[] dirs = directory.GetDirectories();
             string timeStart = $"{startDateTime:HH}_{startDateTime:mm}_{startDateTime:ss}";
             string timeEnd = $"{endDateTime:HH}_{endDateTime:mm}_{endDateTime:ss}";
+            List<string> listRastrBeforeTinning = new List<string> { };
             List<string> listRastr = new List<string> { };
-            while(timeStart != timeEnd)
+            while (timeStart != timeEnd)
             {
                 if (foldername.Contains(timeStart))
                 {
                     int index = Array.IndexOf(foldername, timeStart);
                     FileInfo[] dO = dirs[index].GetFiles("roc_debug_after_OC*");
-                    listRastr.Add($"{dO[0]}");
+                    listRastrBeforeTinning.Add($"{dO[0]}");
                 }
                 startDateTime += TimeSpan.FromSeconds(1);
                 timeStart = $"{startDateTime:HH}_{startDateTime:mm}_{startDateTime:ss}";
+            }
+            for (int i = 0; i < listRastrBeforeTinning.Count; i+= thinning)
+            {
+                listRastr.Add(listRastrBeforeTinning[i]);
             }
             return listRastr;
         }
