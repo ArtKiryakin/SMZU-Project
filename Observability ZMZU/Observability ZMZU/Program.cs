@@ -29,7 +29,7 @@ namespace Observability_ZMZU
             //    }
             //}
 
-            //Dictionary<string, double> kn = OS.CalcularteKn(resultOS);
+            //Dictionary<string, double> kn = OS.CalcularteProbability(resultOS);
             ////Console.WriteLine("kn:");
             //foreach (var ti in kn)
             //{
@@ -44,24 +44,26 @@ namespace Observability_ZMZU
             //}
             //Console.ReadLine();
             //PrintAlignedChart(OS.CalcularteKc(resultOS));
-            var myVariables = new Dictionary<string, double> { };
-            while(true)
-            {
-                Console.WriteLine("Введите название переменной");
-                string variable = Console.ReadLine();
-                Console.WriteLine("Введите значение переменной");
-                double value = Convert.ToDouble(Console.ReadLine());
-                if(value == null || value == 56.0 || variable == null || variable == "56")
-                {
-                    break;
-                }
-                myVariables[variable] = value;
 
-                
-            }
-            Console.WriteLine("Введите формулу:");
-            Console.WriteLine($"{AdditionalCalculations.Evaluate(Console.ReadLine(), myVariables)}");
-
+            //var myVariables = new Dictionary<string, double> { };
+            //while(true)
+            //{
+            //    Console.WriteLine("Введите название переменной");
+            //    string variable = Console.ReadLine();
+            //    Console.WriteLine("Введите значение переменной");
+            //    double value = Convert.ToDouble(Console.ReadLine());
+            //    if(value == null || value == 56.0 || variable == null || variable == "56")
+            //    {
+            //        break;
+            //    }
+            //    myVariables[variable] = value;
+            //
+            //    
+            //}
+            //Console.WriteLine("Введите формулу:");
+            //Console.WriteLine($"{AdditionalCalculations.Evaluate(Console.ReadLine(), myVariables)}");
+            //InfluencingFactorsExperiment.AssessmentInfluencingFactor(0.5, 1, "P перетока (кон.)", "D:\\Учеба\\Срезы", new DateTime(2023, 1, 11, 1, 0, 23), new DateTime(2023, 1, 11, 1, 4, 30), 18, numberEnd: 93);\
+            RepairDiagramExperiment.MakeRepairDiagram("D:\\Учеба\\Срезы", new DateTime(2023, 1, 11, 0, 0, 23), new DateTime(2023, 1, 11, 0, 3, 14), 1, "D:\\Учеба\\Мой сем.5\\НИРС, Диплом\\SMZU-Project\\Observability ZMZU", 6137, 61, 5, true, 0.5, 1);
         }
 
         public static void PrintAlignedChart(Dictionary<string, double> data)

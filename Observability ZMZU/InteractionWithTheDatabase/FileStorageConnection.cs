@@ -44,7 +44,7 @@ namespace InteractionWithTheDatabaseAndFileStorage
             return listBranchs;
         }
 
-        public static List<string> GetRastrFiles(string filePathSlices, DateTime startDateTime, DateTime endDateTime, int thinning = 1)
+        public static List<string> GetRastrFiles(string filePathSlices, DateTime startDateTime, DateTime endDateTime, int thinning = 1, bool mdpDebug = false)
         {
             string datePath = $"{startDateTime.Year}_{startDateTime:MM}_{startDateTime:dd}";
             string filePath = filePathSlices + $"\\{datePath}";
@@ -60,7 +60,15 @@ namespace InteractionWithTheDatabaseAndFileStorage
                 if (foldername.Contains(timeStart))
                 {
                     int index = Array.IndexOf(foldername, timeStart);
-                    FileInfo[] dO = dirs[index].GetFiles("roc_debug_after_OC*");
+                    FileInfo[] dO;
+                    if (mdpDebug)
+                    {
+                        dO = dirs[index].GetFiles("mdp_debug_1*");
+                    }
+                    else
+                    {
+                        dO = dirs[index].GetFiles("roc_debug_after_OC*");
+                    }
                     listRastrBeforeTinning.Add($"{dO[0]}");
                 }
                 startDateTime += TimeSpan.FromSeconds(1);
@@ -71,6 +79,56 @@ namespace InteractionWithTheDatabaseAndFileStorage
                 listRastr.Add(listRastrBeforeTinning[i]);
             }
             return listRastr;
+        }
+
+        public static void MakeFileSporage(string filePath)
+        {
+            string mainFolder = Path.Combine(filePath, "Результаты");
+            Directory.CreateDirectory(mainFolder);
+
+            // 2. Создать две вложенные папки
+            string subFolder1 = Path.Combine(mainFolder, "Файлы с ремонтными схемами");
+            string subFolder2 = Path.Combine(mainFolder, "Файлы с дорасчетами");
+
+            Directory.CreateDirectory(subFolder1);
+            Directory.CreateDirectory(subFolder2);
+        }
+        
+        public static string MakeNewExperiment(int experimentType, int numberExperiment, string filePathSave)
+        {
+            
+            switch (experimentType)
+            {
+                case 1:
+                {
+                    string filePath = filePathSave + "\\Результаты" + "\\Файлы с ремонтными схемами";
+                    string mainFolder = Path.Combine(filePath, $"Ремонтная схема {numberExperiment}");
+                    Directory.CreateDirectory(mainFolder);
+                    return filePath + $"\\Ремонтная схема {numberExperiment}";
+
+                }
+                case 2:
+                {
+                    string filePath = filePathSave + "\\Результаты" + "\\Файлы с дорасчетами";
+                    string mainFolder = Path.Combine(filePath, $"Эксперимент {numberExperiment}");
+                    Directory.CreateDirectory(mainFolder);
+                    return filePath + $"\\Эксперимент {numberExperiment}";
+                }
+                default:
+                {
+                    string filePath = filePathSave + "\\Результаты" + "\\Файлы с ремонтными схемами";
+                    string mainFolder = Path.Combine(filePath, $"Ремонтная схема {numberExperiment}");
+                    Directory.CreateDirectory(mainFolder);
+                    return filePath + $"\\Ремонтная схема {numberExperiment}";
+                }
+            }
+        }
+
+        public static string MakeNewSlice(string filePathSave, string nameSlice)
+        {
+            string mainFolder = Path.Combine(filePathSave, $"{nameSlice}");
+            Directory.CreateDirectory(mainFolder);
+            return filePathSave + $"\\{nameSlice}";
         }
     }
 }

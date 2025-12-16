@@ -7,6 +7,7 @@ using InteractionWithTheDatabase;
 using System.Reflection;
 using InteractionWithTheDatabaseAndFileStorage;
 using System.Collections.Generic;
+using NCalc;
 namespace ClassLibrary
 {
     public class CalculationObservability
@@ -219,6 +220,60 @@ namespace ClassLibrary
                 dictObservability[system.Key] /= Convert.ToDouble(fileRastr.Count);
             }
             return dictObservability;
+        }
+
+        public static Dictionary<string, double> CalculaneReability(string filePathSlices, DateTime startDateTime, DateTime endDateTime, int typeSystem = 1, string districtName = "")
+        {
+            Dictionary<string, double> dictReability = new Dictionary<string, double> { };
+            Dictionary<string, List<int>> dictDistrict = DatabaseConection.ReadDataOfEnergyDistrictAndTM(typeSystem);
+            Dictionary<string, List<double>> dictDistrictOS = new Dictionary<string, List<double>> { };
+            List<string> fileRastr = FileStorageConnection.GetRastrFiles(filePathSlices, startDateTime, endDateTime);
+            if (districtName == "")
+            {
+                foreach (var district in dictDistrict)
+                {
+
+                    Dictionary<string, double> osRes = OS.CalcularteProbability(OS.GoOS(district.Value, fileRastr));
+                    foreach (var ti in osRes)
+                    {
+                        if (dictDistrictOS.ContainsKey(district.Key))
+                        {
+                            dictDistrictOS[district.Key].Add(ti.Value);
+                        }
+                        else
+                        {
+                            dictDistrictOS[district.Key] = new List<double> { ti.Value };
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Dictionary<string, double> osRes = OS.CalcularteProbability(OS.GoOS(dictDistrict[districtName], fileRastr));
+                foreach (var ti in osRes)
+                {
+                    if (dictDistrictOS.ContainsKey(districtName))
+                    {
+                        dictDistrictOS[districtName].Add(ti.Value);
+                    }
+                    else
+                    {
+                        dictDistrictOS[districtName] = new List<double> { ti.Value };
+                    }
+                }
+            }
+            foreach (var district in dictDistrictOS)
+            {
+                List<double> uniqueNumbers = district.Value.Distinct().ToList();
+                double summ = 0;
+                foreach (int number in uniqueNumbers)
+                {
+                    int count = district.Value.Count(x => x == number);
+                    summ += Math.Pow(number, 10) * Convert.ToDouble(count);
+                }
+                dictReability[district.Key] = summ / Math.Pow(10, 13);
+            }
+            return dictReability;
         }
     }
 }
